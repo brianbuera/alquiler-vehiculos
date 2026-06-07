@@ -1,0 +1,65 @@
+package com.buera.alquiler_vehiculos.controller;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.buera.alquiler_vehiculos.dto.ReservaRequest;
+import com.buera.alquiler_vehiculos.model.Reserva;
+import com.buera.alquiler_vehiculos.service.ReservaService;
+
+
+@RestController
+@RequestMapping("/reservas")
+public class ReservaController {
+    private final ReservaService reservaService;
+
+    public ReservaController(ReservaService reservaService) {
+        this.reservaService = reservaService;
+    }
+
+    //crear una reserva
+    @PostMapping
+    public Reserva crearReserva(@RequestBody ReservaRequest reservaRequest) {
+        return reservaService.creaReserva(
+            reservaRequest.getClienteId(),
+            reservaRequest.getVehiculoId(),
+            reservaRequest.getFechaInicio(),
+            reservaRequest.getFechaFin()
+        );
+    }
+    //obtener todas las reservas
+    @GetMapping
+    public List<Reserva> obtenerTodasLasReservas() {
+        return reservaService.obtenerTodasLasReservas();
+    }
+
+    //eliminar una reserva por su ID
+    @DeleteMapping("/{id}")
+    public void eliminarReserva(@PathVariable Long id) {
+        reservaService.eliminarReserva(id);
+    }
+    
+    //actualizar una reserva
+    @PostMapping("/{id}")
+    public Reserva actualizarReserva(@PathVariable Long id, @RequestBody Reserva reservaActualizada) {
+        return reservaService.actualizarReserva(id, reservaActualizada);
+    }
+
+    //obtener una reserva por su ID
+    @GetMapping("/{id}")
+    public Reserva obtenerReservaPorId(@PathVariable Long id) {
+        return reservaService.obtenerReservaPorId(id);
+    }
+
+
+
+
+
+
+}
