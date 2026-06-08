@@ -18,6 +18,9 @@ public class ClienteService {
 
     // Guardar un nuevo cliente
     public Cliente guardarCliente(Cliente cliente) {
+        if (clienteRepository.existsByEmail(cliente.getEmail())) {
+            throw new RuntimeException("Ya existe un cliente con ese email");
+        }
         return clienteRepository.save(cliente);
     }
 

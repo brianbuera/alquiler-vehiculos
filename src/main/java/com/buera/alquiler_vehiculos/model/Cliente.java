@@ -1,6 +1,8 @@
 package com.buera.alquiler_vehiculos.model;
+
 import com.buera.alquiler_vehiculos.model.enums.TipoCliente;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +17,7 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+    @Column(unique = true)
     private String email;
     @Enumerated(EnumType.STRING)
     private TipoCliente tipoCliente;

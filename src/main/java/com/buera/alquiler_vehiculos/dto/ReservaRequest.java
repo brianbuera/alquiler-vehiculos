@@ -2,11 +2,16 @@ package com.buera.alquiler_vehiculos.dto;
 
 import java.time.LocalDate;
 
-public class ReservaRequest {
+import jakarta.validation.constraints.NotNull;
 
+public class ReservaRequest {
+    @NotNull
     private Long clienteId;
+    @NotNull
     private Long vehiculoId;
+    @NotNull
     private LocalDate fechaInicio;
+    @NotNull
     private LocalDate fechaFin;
 
     public ReservaRequest() {

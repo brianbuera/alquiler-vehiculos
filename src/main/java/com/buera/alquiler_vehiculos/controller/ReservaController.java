@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.buera.alquiler_vehiculos.dto.ReservaRequest;
+import com.buera.alquiler_vehiculos.dto.ReservaResponseDTO;
 import com.buera.alquiler_vehiculos.model.Reserva;
 import com.buera.alquiler_vehiculos.service.ReservaService;
+
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -25,7 +28,7 @@ public class ReservaController {
 
     //crear una reserva
     @PostMapping
-    public Reserva crearReserva(@RequestBody ReservaRequest reservaRequest) {
+    public ReservaResponseDTO crearReserva(@Valid @RequestBody ReservaRequest reservaRequest) {
         return reservaService.creaReserva(
             reservaRequest.getClienteId(),
             reservaRequest.getVehiculoId(),
@@ -35,7 +38,7 @@ public class ReservaController {
     }
     //obtener todas las reservas
     @GetMapping
-    public List<Reserva> obtenerTodasLasReservas() {
+    public List<ReservaResponseDTO> obtenerTodasLasReservas() {
         return reservaService.obtenerTodasLasReservas();
     }
 
@@ -47,13 +50,13 @@ public class ReservaController {
     
     //actualizar una reserva
     @PostMapping("/{id}")
-    public Reserva actualizarReserva(@PathVariable Long id, @RequestBody Reserva reservaActualizada) {
+    public ReservaResponseDTO actualizarReserva(@PathVariable Long id, @Valid @RequestBody Reserva reservaActualizada) {
         return reservaService.actualizarReserva(id, reservaActualizada);
     }
 
     //obtener una reserva por su ID
     @GetMapping("/{id}")
-    public Reserva obtenerReservaPorId(@PathVariable Long id) {
+    public ReservaResponseDTO obtenerReservaPorId(@PathVariable Long id) {
         return reservaService.obtenerReservaPorId(id);
     }
 
