@@ -8,6 +8,8 @@ public class ReservaResponseDTO {
 
     private String clienteNombre;
 
+    private String tipoCliente;
+
     private String vehiculo;
 
     private LocalDate fechaInicio;
@@ -15,12 +17,15 @@ public class ReservaResponseDTO {
     private LocalDate fechaFin;
 
     private double precioBase;
+    
+    private double cargoTelepaseIlimitado;
 
     private double porcentajeDescuento;
 
-    private double descuentoAplicado;
-
     private double precioTotal;
+
+
+
 
     public ReservaResponseDTO() {
     }
@@ -81,13 +86,6 @@ public class ReservaResponseDTO {
         this.porcentajeDescuento = porcentajeDescuento;
     }
 
-    public double getDescuentoAplicado() {
-        return descuentoAplicado;
-    }
-
-    public void setDescuentoAplicado(double descuentoAplicado) {
-        this.descuentoAplicado = descuentoAplicado;
-    }
 
     public double getPrecioTotal() {
         return precioTotal;
@@ -95,5 +93,21 @@ public class ReservaResponseDTO {
 
     public void setPrecioTotal(double precioTotal) {
         this.precioTotal = precioTotal;
+    }
+
+    public double getCargoTelepaseIlimitado() {
+        return cargoTelepaseIlimitado;
+    }
+
+    public void setCargoTelepaseIlimitado(double cargoTelepaseIlimitado) {
+        this.cargoTelepaseIlimitado = cargoTelepaseIlimitado;
+    }
+
+    public String getTipoCliente() {
+        return tipoCliente;
+    }
+
+    public void setTipoCliente(String tipoCliente) {
+        this.tipoCliente = tipoCliente;
     }
 }

@@ -13,6 +13,8 @@ public class ReservaRequest {
     private LocalDate fechaInicio;
     @NotNull
     private LocalDate fechaFin;
+    @NotNull
+    private boolean telepaseIlimitado;
 
     public ReservaRequest() {
     }
@@ -48,4 +50,14 @@ public class ReservaRequest {
     public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
     }
+
+    public boolean isTelepaseIlimitado() {
+        return telepaseIlimitado;
+    }
+
+    public void setTelepaseIlimitado(boolean telepaseIlimitado) {
+        this.telepaseIlimitado = telepaseIlimitado;
+    }
+
+
 }

@@ -2,7 +2,9 @@ package com.buera.alquiler_vehiculos.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.buera.alquiler_vehiculos.model.Reserva;
 import com.buera.alquiler_vehiculos.model.Vehiculo;
@@ -32,7 +34,10 @@ public class VehiculoService {
 
     // Obtener un vehículo por su ID
     public Vehiculo obtenerVehiculoPorId(Long id){
-        return vehiculoRepository.findById(id).orElse(null);
+        return vehiculoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Vehículo no encontrado"
+        ));
     }
 
     // Obtener todos los vehículos
@@ -59,7 +64,10 @@ public class VehiculoService {
                     vehiculo.setDisponible(vehiculoActualizado.isDisponible());
                     return vehiculoRepository.save(vehiculo);
                 })
-                .orElse(null);
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Vehículo no encontrado"
+                ));
     }
 
     public List<Vehiculo> buscarDisponibles(LocalDate fechaInicio, LocalDate fechaFin) {

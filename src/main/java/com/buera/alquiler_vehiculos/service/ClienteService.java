@@ -1,7 +1,9 @@
 package com.buera.alquiler_vehiculos.service;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.buera.alquiler_vehiculos.model.Cliente;
 import com.buera.alquiler_vehiculos.repository.ClienteRepository;
@@ -19,14 +21,20 @@ public class ClienteService {
     // Guardar un nuevo cliente
     public Cliente guardarCliente(Cliente cliente) {
         if (clienteRepository.existsByEmail(cliente.getEmail())) {
-            throw new RuntimeException("Ya existe un cliente con ese email");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Ya existe un cliente con ese email"
+            );
         }
         return clienteRepository.save(cliente);
     }
 
     // Obtener un cliente por su ID
     public Cliente obtenerClientePorId(Long id) {
-        return clienteRepository.findById(id).orElse(null);
+        return clienteRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Cliente no encontrado"
+        ));
     }
 
     // Eliminar un cliente por su ID
@@ -48,7 +56,10 @@ public class ClienteService {
                     cliente.setTipoCliente(clienteActualizado.getTipoCliente());
                     return clienteRepository.save(cliente);
                 })
-                .orElse(null);
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente no encontrado"
+                ));
     }
 
 

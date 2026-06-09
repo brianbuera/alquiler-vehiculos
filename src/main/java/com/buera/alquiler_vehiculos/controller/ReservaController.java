@@ -29,12 +29,7 @@ public class ReservaController {
     //crear una reserva
     @PostMapping
     public ReservaResponseDTO crearReserva(@Valid @RequestBody ReservaRequest reservaRequest) {
-        return reservaService.creaReserva(
-            reservaRequest.getClienteId(),
-            reservaRequest.getVehiculoId(),
-            reservaRequest.getFechaInicio(),
-            reservaRequest.getFechaFin()
-        );
+        return reservaService.creaReserva(reservaRequest);
     }
     //obtener todas las reservas
     @GetMapping

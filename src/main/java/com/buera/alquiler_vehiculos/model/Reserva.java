@@ -22,17 +22,34 @@ public class Reserva {
     private Vehiculo vehiculo;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
+    private boolean telepaseIlimitado;
+    private double cargoAdicionalTelepase;
+    private double precioBase;
     private double precioTotal;
 
     public Reserva() {
     }
 
-    public Reserva(Cliente cliente, Vehiculo vehiculo, LocalDate fechaInicio, LocalDate fechaFin, double precioTotal) {
+    public Reserva(
+            Cliente cliente,
+            Vehiculo vehiculo,
+            LocalDate fechaInicio,
+            LocalDate fechaFin,
+            boolean telepaseIlimitado,
+            double cargoAdicionalTelepase,
+            double precioBase,
+            double precioTotal
+    ) {
         this.cliente = cliente;
         this.vehiculo = vehiculo;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
+        this.telepaseIlimitado = telepaseIlimitado;
+        this.cargoAdicionalTelepase = cargoAdicionalTelepase;
+        this.precioBase = precioBase;
         this.precioTotal = precioTotal;
+  
+
     }
 
 
@@ -85,5 +102,32 @@ public class Reserva {
     public void setPrecioTotal(double precioTotal) {
         this.precioTotal = precioTotal;
     }
+
+    //getter y setter para telepaseIlimitado
+    public boolean isTelepaseIlimitado() {
+        return telepaseIlimitado;
+    }
+
+    public void setTelepaseIlimitado(boolean telepaseIlimitado) {
+        this.telepaseIlimitado = telepaseIlimitado;
+    }
     
+    public double getCargoAdicionalTelepase() {
+        return cargoAdicionalTelepase;
+    }
+
+    public void setCargoAdicionalTelepase(double cargoAdicionalTelepase) {
+        this.cargoAdicionalTelepase = cargoAdicionalTelepase;
+    }
+
+    public double getPrecioBase() {
+        return precioBase;
+    }
+
+    public void setPrecioBase(double precioBase) {
+        this.precioBase = precioBase;
+    }   
+
+
+
 }
