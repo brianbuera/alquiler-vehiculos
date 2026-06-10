@@ -15,6 +15,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long>{
         LocalDate fechaInicio
     );
 
+    boolean existsByVehiculoId(Long vehiculoId);
     public List<Reserva> findByFechaInicioBeforeAndFechaFinAfter(LocalDate fechaFin, LocalDate fechaInicio);
 
 }

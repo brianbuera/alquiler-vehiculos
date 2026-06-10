@@ -6,8 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+
 @Service
-public class ReservaValidator {
+public class FechasValidator {
+
+    public FechasValidator(){
+        
+    }
 
     public void validarFechas(LocalDate fechaInicio, LocalDate fechaFin) {
 
@@ -32,4 +37,5 @@ public class ReservaValidator {
             );
         }
     }
+
 }

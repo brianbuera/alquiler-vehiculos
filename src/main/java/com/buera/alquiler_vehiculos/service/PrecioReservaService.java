@@ -1,38 +1,43 @@
 package com.buera.alquiler_vehiculos.service;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
-import com.buera.alquiler_vehiculos.model.Reserva;
+
 import com.buera.alquiler_vehiculos.model.enums.TipoCliente;
-import com.buera.alquiler_vehiculos.model.strategies.DescuentoClienteEstandar;
-import com.buera.alquiler_vehiculos.model.strategies.DescuentoClientePremium;
 import com.buera.alquiler_vehiculos.model.strategies.Descuento;
-import com.buera.alquiler_vehiculos.model.strategies.DescuentoClienteVip;
+
 
 @Service
 public class PrecioReservaService {
     private static final double CARGO_TELEPASE = 6000;
-    private final Map<TipoCliente, Descuento> strategies = Map.of(
-            TipoCliente.ESTANDAR, new DescuentoClienteEstandar(),
-            TipoCliente.PREMIUM, new DescuentoClientePremium(),
-            TipoCliente.VIP, new DescuentoClienteVip()
-    );
+    private final Map<String, Descuento> strategies;
+
+
+    public PrecioReservaService(List<Descuento> strategies) {
+        this.strategies = strategies.stream().collect(Collectors.toMap(
+                Descuento::getTipoString, // clave -> tipoCliente
+                strategy -> strategy
+        ));
+    }
     //calcular el precio total de una reserva
-    public double calcularPrecioFinal(Reserva reserva) {
-        Descuento strategy = strategies.get(reserva.getCliente().getTipoCliente());
-        double adicional = reserva.isTelepaseIlimitado() ? CARGO_TELEPASE : 0;
-        return strategy.aplicarDescuento(reserva.getPrecioBase() + adicional);
+    public double calcularPrecioFinal(TipoCliente tipoCliente, double total, double cargoAdicionalTelepase) {
+        Descuento strategy = strategies.get(tipoCliente.name());
+        return strategy.aplicarDescuento(total + cargoAdicionalTelepase);
     }
 
-    public double getCargoAdicionalTelepase() {
-        return CARGO_TELEPASE;
+    public double calcularCargoTelepase(boolean isTelepaseIlimitado) {
+        return isTelepaseIlimitado ? CARGO_TELEPASE : 0;
     }
 
-    public double calcularPrecioBase(Reserva reserva) {
-        long dias = java.time.temporal.ChronoUnit.DAYS.between(
-                reserva.getFechaInicio(),
-                reserva.getFechaFin()
+    public double calcularPrecioBase(LocalDate fechaInicio, LocalDate fechaFin, double precioDiario) {
+         long dias = java.time.temporal.ChronoUnit.DAYS.between(
+                fechaInicio,
+                fechaFin
         );
-        return dias * reserva.getVehiculo().getPrecioDiario();
+        return dias * precioDiario;
     }
 
 

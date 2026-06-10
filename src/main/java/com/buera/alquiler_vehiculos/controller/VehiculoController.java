@@ -24,22 +24,23 @@ public class VehiculoController {
         this.vehiculoService = vehiculoService;
     }
 
+    //GET de todos los vehiculos
     @GetMapping
     public List<Vehiculo> listarVehiculos(){
         return vehiculoService.obtenerVehiculos();
     }
-    
+    //BUSCAR de vehiculo por id
     @GetMapping("/{id}")
     public Vehiculo obtenerVehiculoPorId(@PathVariable Long id){
         return vehiculoService.obtenerVehiculoPorId(id);
     }
-
-    @GetMapping("/disponibles/all")
+    //Obtener vehiculos con estado disponible
+    @GetMapping("/disponibles")
     public List<Vehiculo> listarVehiculosDisponiblesAllList(){
         return vehiculoService.obtenerVehiculosDisponibles();
     }
-
-    @GetMapping("/disponibles")
+    //mediante rango de fechas obtener vehiculos disponibles para reservar
+    @GetMapping("/buscar/por-fechas")
     public List<Vehiculo> buscarDisponibles(
             @RequestParam LocalDate inicio,
             @RequestParam LocalDate fin

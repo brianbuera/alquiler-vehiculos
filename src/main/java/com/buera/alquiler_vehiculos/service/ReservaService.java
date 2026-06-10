@@ -1,4 +1,5 @@
 package com.buera.alquiler_vehiculos.service;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import com.buera.alquiler_vehiculos.model.Vehiculo;
 import com.buera.alquiler_vehiculos.repository.ClienteRepository;
 import com.buera.alquiler_vehiculos.repository.ReservaRepository;
 import com.buera.alquiler_vehiculos.repository.VehiculoRepository;
-import com.buera.alquiler_vehiculos.service.validators.ReservaValidator;
+import com.buera.alquiler_vehiculos.service.validators.FechasValidator;
 
 @Service
 public class ReservaService {
@@ -21,13 +22,13 @@ public class ReservaService {
     private final ReservaRepository reservaRepository;
     private final VehiculoRepository vehiculoRepository;
     private final ClienteRepository clienteRepository;
-    private final ReservaValidator reservaValidator;
+    private final FechasValidator reservaValidator;
     private final PrecioReservaService precioService;
 
     public ReservaService(ReservaRepository reservaRepository, 
                         VehiculoRepository vehiculoRepository, 
                         ClienteRepository clienteRepository, 
-                        ReservaValidator reservaValidator, 
+                        FechasValidator reservaValidator, 
                         PrecioReservaService precioService) {
         this.reservaRepository = reservaRepository;
         this.vehiculoRepository = vehiculoRepository;
@@ -38,7 +39,10 @@ public class ReservaService {
 
     //crear una reserva
     public ReservaResponseDTO creaReserva(ReservaRequest reservaRequest) {
-        reservaValidator.validarFechas(reservaRequest.getFechaInicio(), reservaRequest.getFechaFin());
+        
+        LocalDate fechaInicio = reservaRequest.getFechaInicio();
+        LocalDate fechaFin = reservaRequest.getFechaFin();
+        reservaValidator.validarFechas(fechaInicio, fechaFin);
 
         Cliente cliente = clienteRepository.findById(reservaRequest.getClienteId())
                 .orElseThrow(() -> new ResponseStatusException(
@@ -54,9 +58,9 @@ public class ReservaService {
 
         boolean ocupado = reservaRepository
                 .existsByVehiculoIdAndFechaInicioLessThanAndFechaFinGreaterThan(
-                        reservaRequest.getVehiculoId(),
-                        reservaRequest.getFechaFin(),
-                        reservaRequest.getFechaInicio()
+                        vehiculo.getId(),
+                        fechaFin,
+                        fechaInicio
                 );
 
         if (ocupado) {
@@ -65,20 +69,31 @@ public class ReservaService {
                     "El vehículo no está disponible en esas fechas"
             );
         }
-        Reserva reserva = new Reserva();
+        boolean isTelepaseIlimitado = reservaRequest.isTelepaseIlimitado();
+        double precioBase = precioService.calcularPrecioBase(
+                fechaInicio,
+                fechaFin,
+                vehiculo.getPrecioDiario()
+        );
 
+        double cargoTelepase = precioService.calcularCargoTelepase(isTelepaseIlimitado);
+
+        double precioTotalFinal = precioService.calcularPrecioFinal(
+                cliente.getTipoCliente(),
+                precioBase,
+                cargoTelepase
+        );
+
+        
+        Reserva reserva = new Reserva();
         reserva.setCliente(cliente);
         reserva.setVehiculo(vehiculo);
-        reserva.setFechaInicio(reservaRequest.getFechaInicio());
-        reserva.setFechaFin(reservaRequest.getFechaFin());
-        reserva.setTelepaseIlimitado(reservaRequest.isTelepaseIlimitado());
-        reserva.setPrecioBase(precioService.calcularPrecioBase(reserva));
-
-        double precioTotal = precioService.calcularPrecioFinal(reserva);
-
-        reserva.setCargoAdicionalTelepase(precioService.getCargoAdicionalTelepase());
-        reserva.setPrecioTotal(precioTotal);
-
+        reserva.setFechaInicio(fechaInicio);
+        reserva.setFechaFin(fechaFin);
+        reserva.setTelepaseIlimitado(isTelepaseIlimitado);
+        reserva.setPrecioBase(precioBase);
+        reserva.setCargoAdicionalTelepase(cargoTelepase);
+        reserva.setPrecioTotal(precioTotalFinal);
         return ReservaMapper.toDTO(reservaRepository.save(reserva));
     }
 

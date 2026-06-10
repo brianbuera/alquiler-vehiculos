@@ -18,6 +18,7 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
+    // Create
     // Guardar un nuevo cliente
     public Cliente guardarCliente(Cliente cliente) {
         if (clienteRepository.existsByEmail(cliente.getEmail())) {
@@ -29,6 +30,12 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
+    // Read
+    // Obtener todos los clientes
+    public List<Cliente> obtenerTodosLosClientes() {
+        return clienteRepository.findAll();
+    }
+
     // Obtener un cliente por su ID
     public Cliente obtenerClientePorId(Long id) {
         return clienteRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
@@ -37,29 +44,22 @@ public class ClienteService {
         ));
     }
 
-    // Eliminar un cliente por su ID
-    public void eliminarCliente(Long id) {
-        clienteRepository.deleteById(id);
-    }
-
-    // Obtener todos los clientes
-    public List<Cliente> obtenerTodosLosClientes() {
-        return clienteRepository.findAll();
-    }
-
+    // update
     // Actualizar un cliente existente
     public Cliente actualizarCliente(Long id, Cliente clienteActualizado) {
-        return clienteRepository.findById(id)
-                .map(cliente -> {
-                    cliente.setNombre(clienteActualizado.getNombre());
-                    cliente.setEmail(clienteActualizado.getEmail());
-                    cliente.setTipoCliente(clienteActualizado.getTipoCliente());
-                    return clienteRepository.save(cliente);
-                })
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Cliente no encontrado"
-                ));
+        Cliente cliente = this.obtenerClientePorId(id);
+        cliente.setNombre(clienteActualizado.getNombre());
+        cliente.setEmail(clienteActualizado.getEmail());
+        cliente.setTipoCliente(clienteActualizado.getTipoCliente());
+        return clienteRepository.save(cliente);
+
+    }
+
+    // Delete
+    // Eliminar un cliente por su ID
+    public void eliminarCliente(Long id) {
+        Cliente cliente = obtenerClientePorId(id);
+        clienteRepository.delete(cliente);
     }
 
 

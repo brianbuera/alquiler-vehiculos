@@ -36,7 +36,6 @@ public class Reserva {
             LocalDate fechaInicio,
             LocalDate fechaFin,
             boolean telepaseIlimitado,
-            double cargoAdicionalTelepase,
             double precioBase,
             double precioTotal
     ) {
@@ -45,7 +44,7 @@ public class Reserva {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.telepaseIlimitado = telepaseIlimitado;
-        this.cargoAdicionalTelepase = cargoAdicionalTelepase;
+        this.cargoAdicionalTelepase = 0;
         this.precioBase = precioBase;
         this.precioTotal = precioTotal;
   

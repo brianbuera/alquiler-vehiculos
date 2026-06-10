@@ -21,27 +21,27 @@ public class ClienteController {
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
     }
-
+    // create
     @PostMapping
     public Cliente crearCliente(@RequestBody Cliente cliente) {
         return clienteService.guardarCliente(cliente);
-    }   
-
+    }
+    //search
     @GetMapping("/{id}")
     public Cliente obtenerClientePorId(@PathVariable Long id) {
         return clienteService.obtenerClientePorId(id);
     }
-
+    //delete cliente
     @DeleteMapping("/{id}")
     public void eliminarCliente(@PathVariable Long id) {
         clienteService.eliminarCliente(id);
     }
-
+    //get clientes all 
     @GetMapping
     public List<Cliente> obtenerTodosLosClientes() {
         return clienteService.obtenerTodosLosClientes();
     }
-
+    //actualizar cliente
     @PutMapping("/{id}")
     public Cliente actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
         return clienteService.actualizarCliente(id, cliente);
