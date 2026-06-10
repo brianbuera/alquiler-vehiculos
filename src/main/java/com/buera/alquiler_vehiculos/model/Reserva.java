@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Reserva {
@@ -16,9 +17,11 @@ public class Reserva {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "cliente_id")
+    @NotNull
     private Cliente cliente;
     @ManyToOne
     @JoinColumn(name = "vehiculo_id")
+    @NotNull
     private Vehiculo vehiculo;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;

@@ -14,7 +14,7 @@ import com.buera.alquiler_vehiculos.model.Vehiculo;
 import com.buera.alquiler_vehiculos.repository.ClienteRepository;
 import com.buera.alquiler_vehiculos.repository.ReservaRepository;
 import com.buera.alquiler_vehiculos.repository.VehiculoRepository;
-import com.buera.alquiler_vehiculos.service.validators.FechasValidator;
+import com.buera.alquiler_vehiculos.service.validator.FechasValidator;
 
 @Service
 public class ReservaService {
@@ -115,21 +115,12 @@ public class ReservaService {
 
     //eliminar una reserva por su ID
     public void eliminarReserva(Long id) {
-        reservaRepository.deleteById(id);
-    }
-
-    //actualizar una reserva
-    public ReservaResponseDTO actualizarReserva(Long id, Reserva reservaActualizada) { 
-        Reserva reservaExistente = reservaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+        Reserva reserva = reservaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "Reserva no encontrada"
         ));
-        reservaExistente.setVehiculo(reservaActualizada.getVehiculo());
-        reservaExistente.setCliente(reservaActualizada.getCliente());
-        reservaExistente.setFechaInicio(reservaActualizada.getFechaInicio());
-        reservaExistente.setFechaFin(reservaActualizada.getFechaFin());
-        return ReservaMapper.toDTO(reservaRepository.save(reservaExistente));
+        reservaRepository.delete(reserva);
     }
 
- 
+
 }

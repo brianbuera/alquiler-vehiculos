@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.buera.alquiler_vehiculos.model.Cliente;
 import com.buera.alquiler_vehiculos.service.ClienteService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/clientes")
@@ -23,7 +25,7 @@ public class ClienteController {
     }
     // create
     @PostMapping
-    public Cliente crearCliente(@RequestBody Cliente cliente) {
+    public Cliente crearCliente(@Valid @RequestBody Cliente cliente) {
         return clienteService.guardarCliente(cliente);
     }
     //search

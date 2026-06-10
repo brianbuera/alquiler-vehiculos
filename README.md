@@ -27,6 +27,16 @@ La aplicación utiliza una arquitectura monolítica basada en capas:
 
 ---
 
+# Diagramas
+
+## DER
+
+![DER](docs/der.png)
+
+## Diagrama de clases
+
+![UML](docs/uml-clases.png)
+
 # Funcionalidades principales
 
 ## Clientes
@@ -51,7 +61,6 @@ La aplicación utiliza una arquitectura monolítica basada en capas:
 * Crear reservas
 * Validar disponibilidad por fechas
 * Historial de reservas por cliente
-* Historial de reservas por vehículo
 * Cálculo automático de precios
 * Descuentos según tipo de cliente
 * Cargo adicional por TelePASE ilimitado
@@ -61,9 +70,9 @@ La aplicación utiliza una arquitectura monolítica basada en capas:
 # Reglas de negocio
 
 * Un vehículo no puede reservarse en fechas ocupadas.
-* Clientes PREMIUM reciben descuentos.
+* Clientes PREMIUM y VIP reciben descuentos.
 * El TelePASE ilimitado agrega un cargo adicional fijo.
-* El precio total se calcula automáticamente en el backend.
+* El precio se calcula automáticamente en el backend.
 
 ---
 
@@ -80,7 +89,7 @@ http://localhost:8080/h2-console
 Configuración:
 
 ```text
-JDBC URL: jdbc:h2:file:./data/clientedb
+JDBC URL: jdbc:h2:file:./data/alquileresdb
 User: sa
 Password:
 ```
@@ -130,9 +139,13 @@ DELETE /clientes/{id}
 ```http
 GET /vehiculos
 POST /vehiculos
+POST /vehiculos/lista ---> AGREGA UNA LISTA DE VEHICULOS
 GET /vehiculos/{id}
+GET /vehiculos/buscar/disponibles
+GET /vehiculos/buscar/por-fechas
 PUT /vehiculos/{id}
 DELETE /vehiculos/{id}
+
 ```
 
 ---

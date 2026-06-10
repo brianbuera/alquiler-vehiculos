@@ -1,6 +1,10 @@
 package com.buera.alquiler_vehiculos.model;
 import com.buera.alquiler_vehiculos.model.enums.CategoriaVehiculo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Vehiculo {
@@ -8,13 +12,19 @@ public class Vehiculo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String marca;
+    @NotBlank
     private String modelo;
+    @NotBlank
     private String anio;
+    @NotBlank
     private String dominio;
+    @Min(4)
+    @Max(8)
     private int capacidad;
-
     @Enumerated(EnumType.STRING)
+    @NotNull
     private CategoriaVehiculo categoria;
     private boolean disponible;
     private double precioDiario;    

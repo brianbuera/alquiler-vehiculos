@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.buera.alquiler_vehiculos.model.Vehiculo;
 import com.buera.alquiler_vehiculos.service.VehiculoService;
 
+import jakarta.validation.Valid;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class VehiculoController {
         return vehiculoService.obtenerVehiculoPorId(id);
     }
     //Obtener vehiculos con estado disponible
-    @GetMapping("/disponibles")
+    @GetMapping("/buscar/disponibles")
     public List<Vehiculo> listarVehiculosDisponiblesAllList(){
         return vehiculoService.obtenerVehiculosDisponibles();
     }
@@ -54,7 +56,7 @@ public class VehiculoController {
     }
 
     @PostMapping("/lista")
-    public List<Vehiculo> crearVehiculos(@RequestBody List<Vehiculo> vehiculos){
+    public List<Vehiculo> crearVehiculos(@Valid @RequestBody List<Vehiculo> vehiculos){
         return vehiculoService.guardarVehiculos(vehiculos);
     }
     

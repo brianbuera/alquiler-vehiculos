@@ -1,0 +1,217 @@
+@startuml uml
+!theme vibrant
+package "controller" {
+  class ClienteController{
+    - clienteService: ClienteService
+
+    + crearCliente(Cliente): Cliente
+    + obtenerClientePorId(Long): Cliente
+    + eliminarCliente(Long): void
+    + obtenerTodosLosClientes(): List<Cliente>
+    + actualizarCliente(Long, Cliente): Cliente
+  }
+  class VehiculoController{
+    - vehiculoService: VehiculoService
+
+    + crearVehiculo(Vehiculo): Vehiculo
+    + crearVehiculos (List<Vehiculo>): List<Vehiculo>
+    + actualizarVehiculo(Long, Vehiculo): Vehiculo
+    + eliminarVehiculo (Long): void
+    + listarVehiculos():List<Vehiculo>
+    + obtenerVehiculoPorId(Long): Vehiculo
+    + listarVehiculosDisponiblesAllList():List<Vehiculo>
+    + buscarDisponibles(LocalDate, LocalDate):List<Vehiculo>
+  }
+  class ReservaController{
+
+    - reservaService: ReservaService
+
+    + obtenerTodasLasReservas():List<ReservaResponseDTO>
+    + crearReserva(ReservaRequest): ReservaResponseDTO
+    + obtenerReservaPorId(Long): ReservaResponseDTO
+    + eliminarReserva(Long): void
+
+  }
+}
+
+package "service" {
+  class ClienteService {
+    - clienteRepository: ClienteRepository
+
+    + obtenerTodosLosClientes():List<Cliente>
+    + obtenerClientePorId(Long): Cliente
+    + actualizarCliente(Long, Cliente): Cliente
+    + eliminarCliente(Long)
+
+    }
+
+  class VehiculoService {
+    - vehiculoRepository: VehiculoRepository
+    - reservaRepository: ReservaRepository
+    - fechasValidator: FechasValidator
+
+    + guardarVehiculos(): List<Vehiculos>
+    + guardarVehiculo(): Vehiculo
+    + obtenerVehiculos(): List<Vehiculos>
+    + obtenerVehiculoPorId(Long): Vehiculo
+    + obtenerVehiculosDisponibles(): List<Vehiculos>
+    + eliminarVehiculo(Long): void
+    + actualizarVehiculo(Long, Vehiculo): Vehiculo
+    + buscarDisponibles(LocalDate, LocalDate): List<Vehiculos>
+    }
+
+  class ReservaService {
+    - reservaRepository: ReservaRepository
+    - vehiculoRepository: VehiculoRepository
+    - clienteRepository: ClienteRepository
+    - reservaValidator: FechasValidator
+    - precioService: PrecioReservaService
+
+    + crearReserva() : ReservaResponseDTO
+    + obtenerReservaPorId() : ReservaResponseDTO
+    + obtenerTodasLasReservas() : List<ReservaResponseDTO>
+    + eliminarReserva(Long): void
+    }
+  class PrecioReservaService {
+     - CARGO_TELEPASE: double
+     - strategies:Map<String,Descuento>
+     +calcularPrecioFinal():double
+     +calcularPrecioBase():double
+     +calcularCargoTelepaseIlimitado(boolean):double
+
+}
+}
+
+package "repository" {
+  interface ClienteRepository
+  interface VehiculoRepository{
+    findByDisponibleTrue():List<Vehiculo>
+    existsByDominioIgnoreCase():boolean
+  }
+  interface ReservaRepository{
+    existsByVehiculoId(Long)
+    existsByVehiculoIdAndFechaInicioLessThanAndFechaFinGreaterThan(Long, LocalDate, LocalDate)
+  }
+}
+
+package "model" {
+  class Cliente {
+    - id : Long
+    - nombre : String
+    - email : String
+    - tipoCliente : TipoCliente
+  }
+
+  class Vehiculo {
+    - id : Long
+    - marca : String
+    - modelo : String
+    - anio : int
+    - dominio : String
+    - capacidad : int
+    - categoria : CategoriaVehiculo
+    - disponible : boolean
+    - precioDiario : double
+  }
+
+  class Reserva {
+    - id : Long
+    - fechaInicio : LocalDate
+    - fechaFin : LocalDate
+    - telepaseIlimitado : boolean
+    - cargoAdicionalTelepase : double
+    - precioBase : double
+    - precioTotal : double
+  }
+
+  enum TipoCliente {
+    ESTANDAR
+    PREMIUM
+  }
+
+  enum CategoriaVehiculo {
+    ECONOMICO
+    EJECUTIVO
+    PREMIUM
+  }
+}
+
+package "model.strategies" {
+  interface Descuento {
+    + aplicarDescuento(precioBase : double) : double
+    + getTipo():String
+  }
+
+  class DescuentoEstandar
+  class DescuentoPremium
+  class DescuentoVip
+}
+
+package "dto" {
+  class ReservaRequest {
+    - clienteId : Long
+    - vehiculoId : Long
+    - fechaInicio : LocalDate
+    - fechaFin : LocalDate
+    - telepaseIlimitado : boolean
+  }
+  class ReservaResponseDTO{
+    - reservaId: Long
+    - clienteNombre: String
+    - tipoCliente: String
+    - vehiculo: String
+    - fechaInicio : LocalDate
+    - fechaFin : LocalDate
+    - precioBase: double
+    - cargoTelepaseIlimitado: double
+    - porcentajeDescuento: double
+    - precioTotal: double
+  }
+
+}
+
+package "mapper" {
+  class ReservaMapper {
+    +toDTO():ReservaResponseDTO
+  }
+}
+
+package "service.validator" {
+  class FechasValidator{
+    +validarFechas(LocalDate inicio, LocalDate fin): void
+  }
+
+}
+
+Reserva "muchas" --> "1" Cliente
+Reserva "muchas" --> "1" Vehiculo
+
+Cliente --> TipoCliente
+Vehiculo --> CategoriaVehiculo
+
+DescuentoEstandar ..|> Descuento
+DescuentoPremium ..|> Descuento
+DescuentoVip ..|> Descuento
+
+ReservaController --> ReservaService
+ClienteController --> ClienteService
+VehiculoController --> VehiculoService
+
+ReservaService --> ReservaRepository
+ReservaService --> ClienteRepository
+ReservaService --> VehiculoRepository
+ReservaService --> FechasValidator 
+ReservaService --> PrecioReservaService
+
+ClienteService --> ClienteRepository
+VehiculoService --> VehiculoRepository
+VehiculoService --> ReservaRepository
+
+PrecioReservaService --> Descuento
+
+ReservaMapper --> Reserva
+ReservaMapper --> ReservaResponseDTO
+
+ReservaController --> ReservaRequest
+ReservaController --> ReservaResponseDTO
+@enduml

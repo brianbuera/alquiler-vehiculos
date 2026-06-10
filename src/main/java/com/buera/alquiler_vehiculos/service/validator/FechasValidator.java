@@ -1,4 +1,4 @@
-package com.buera.alquiler_vehiculos.service.validators;
+package com.buera.alquiler_vehiculos.service.validator;
 
 import java.time.LocalDate;
 

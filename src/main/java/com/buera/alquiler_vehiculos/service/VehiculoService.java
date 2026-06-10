@@ -10,7 +10,7 @@ import com.buera.alquiler_vehiculos.model.Reserva;
 import com.buera.alquiler_vehiculos.model.Vehiculo;
 import com.buera.alquiler_vehiculos.repository.ReservaRepository;
 import com.buera.alquiler_vehiculos.repository.VehiculoRepository;
-import com.buera.alquiler_vehiculos.service.validators.FechasValidator;
+import com.buera.alquiler_vehiculos.service.validator.FechasValidator;
 
 
 
