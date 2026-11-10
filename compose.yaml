@@ -1,0 +1,49 @@
+
+services:
+  alquiler-api:
+    build: ./backend
+    image: alquiler-vehiculos-backend:1.0
+    container_name: alquiler-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/alquilerdb
+      SPRING_DATASOURCE_USERNAME: alquiler_user
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17
+    container_name: alquiler-postgres
+    environment:
+      POSTGRES_DB: alquilerdb
+      POSTGRES_USER: alquiler_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "55432:5432"
+    volumes:
+      - postgres-datos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alquiler_user -d alquilerdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    
+  frontend:
+    build: ./frontend
+    image: alquiler-vehiculos-frontend:1.0
+    ports:
+      - "3000:80"
+    depends_on:
+      - alquiler-api
+    restart: unless-stopped
+
+volumes:
+  alquiler-datos:
+    external: true
+  postgres-datos:
